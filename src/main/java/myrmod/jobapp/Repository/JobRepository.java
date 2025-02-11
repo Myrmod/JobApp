@@ -6,6 +6,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -26,21 +27,22 @@ public class JobRepository {
 		JOB_DATA.put("10", new Job(10L, "Job 10", "Description 10", "40000€", "50000€", "Germany"));
 	}
 
-	public Mono<Job> findById(Long id) {
-		return Mono.just(JOB_DATA.get(id.toString()));
+	public Job findById(Long id) {
+		return JOB_DATA.get(id.toString());
 	}
 
-	public Flux<Job> findAll() {
-		return Flux.fromIterable(JOB_DATA.values());
+	public List<Job> findAll() {
+		return JOB_DATA.values().stream().toList();
 	}
 
-	public Mono<Job> save(Job job) {
+	public Job save(Job job) {
 		JOB_DATA.put(job.getId().toString(), job);
-		return Mono.just(job);
+		return job;
 	}
 
-	public Mono<Void> delete(Long id) {
-		return Mono.justOrEmpty(JOB_DATA.remove(id.toString()))
-			.then();
+	public Void delete(Long id) {
+		JOB_DATA.remove(id.toString());
+
+		return null;
 	}
 }

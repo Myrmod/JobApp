@@ -1,7 +1,7 @@
 package myrmod.jobapp.Controller;
 
 import myrmod.jobapp.Model.Job;
-import myrmod.jobapp.Repository.JobRepository;
+import myrmod.jobapp.Service.JobService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -25,14 +25,14 @@ class JobControllerTest {
 	private WebTestClient webTestClient;
 
 	@MockitoBean
-	private JobRepository jobRepository;
+	private JobService jobService;
 
 	@Test
 	void testFindAll() {
 		Job job1 = new Job(1L, "Job 1", "Description 1", "40000€", "50000€", "Germany");
 		Job job2 = new Job(2L, "Job 2", "Description 2", "40000€", "50000€", "Germany");
 
-		when(jobRepository.findAll()).thenReturn(Flux.just(job1, job2));
+		when(jobService.findAll()).thenReturn(Flux.just(job1, job2));
 
 		List<Job> responseBody = webTestClient.get().uri("/jobs")
 			.exchange()
@@ -53,7 +53,7 @@ class JobControllerTest {
 	void testFindById_Found() {
 		Job job = new Job(1L, "Job 1", "Description 1", "40000€", "50000€", "Germany");
 
-		when(jobRepository.findById(1L)).thenReturn(Mono.just(job));
+		when(jobService.findById(1L)).thenReturn(Mono.just(job));
 
 		Job responseBody = webTestClient.get().uri("/jobs/1")
 			.exchange()
@@ -70,7 +70,7 @@ class JobControllerTest {
 
 	@Test
 	void testFindById_NotFound() {
-		when(jobRepository.findById(1L)).thenReturn(Mono.empty());
+		when(jobService.findById(1L)).thenReturn(Mono.empty());
 
 		webTestClient.get().uri("/jobs/1")
 			.exchange()
@@ -82,7 +82,7 @@ class JobControllerTest {
 		Job jobRequest = new Job(null, "Job 11", "Description 11", "50000€", "60000€", "France"); // No ID
 		Job savedJob = new Job(11L, "Job 11", "Description 11", "50000€", "60000€", "France"); // With ID
 
-		when(jobRepository.save(any(Job.class))).thenReturn(Mono.just(savedJob));
+		when(jobService.save(any(Job.class))).thenReturn(Mono.just(savedJob));
 
 		Job responseBody = webTestClient.post().uri("/jobs")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -107,8 +107,8 @@ class JobControllerTest {
 		Job existingJob = new Job(1L, "Old Job", "Old Description", "40000€", "50000€", "Germany");
 		Job updatedJob = new Job(1L, "Updated Job", "Updated Description", "50000€", "60000€", "Germany");
 
-		when(jobRepository.findById(1L)).thenReturn(Mono.just(existingJob));
-		when(jobRepository.save(any(Job.class))).thenReturn(Mono.just(updatedJob));
+		when(jobService.findById(1L)).thenReturn(Mono.just(existingJob));
+		when(jobService.save(any(Job.class))).thenReturn(Mono.just(updatedJob));
 
 		Job responseBody = webTestClient.put().uri("/jobs/1")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +132,7 @@ class JobControllerTest {
 	void testUpdateJob_NotFound() {
 		Job updatedJob = new Job(1L, "Updated Job", "Updated Description", "50000€", "60000€", "Germany");
 
-		when(jobRepository.findById(1L)).thenReturn(Mono.empty());
+		when(jobService.findById(1L)).thenReturn(Mono.empty());
 
 		webTestClient.put().uri("/jobs/1")
 			.bodyValue(updatedJob)
@@ -144,8 +144,8 @@ class JobControllerTest {
 	void testDeleteJob_Found() {
 		Job existingJob = new Job(1L, "Job to Delete", "Description", "40000€", "50000€", "Germany");
 
-		when(jobRepository.findById(1L)).thenReturn(Mono.just(existingJob));
-		when(jobRepository.delete(1L)).thenReturn(Mono.empty());
+		when(jobService.findById(1L)).thenReturn(Mono.just(existingJob));
+		when(jobService.delete(1L)).thenReturn(Mono.empty());
 
 		webTestClient.delete().uri("/jobs/1")
 			.exchange()
@@ -154,7 +154,7 @@ class JobControllerTest {
 
 	@Test
 	void testDeleteJob_NotFound() {
-		when(jobRepository.findById(1L)).thenReturn(Mono.empty());
+		when(jobService.findById(1L)).thenReturn(Mono.empty());
 
 		webTestClient.delete().uri("/jobs/1")
 			.exchange()
