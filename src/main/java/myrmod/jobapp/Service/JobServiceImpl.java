@@ -19,8 +19,7 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public Mono<Job> findById(Long id) {
-		return Mono.justOrEmpty(jobRepository.findById(id))
-			.switchIfEmpty(Mono.error(new ResourceNotFoundException("Job with ID " + id + " not found")));
+		return Mono.justOrEmpty(jobRepository.findById(id));
 	}
 
 	@Override

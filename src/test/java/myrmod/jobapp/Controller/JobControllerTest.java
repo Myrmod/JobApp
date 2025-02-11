@@ -1,6 +1,5 @@
 package myrmod.jobapp.Controller;
 
-import myrmod.jobapp.Exception.ResourceNotFoundException;
 import myrmod.jobapp.Model.Job;
 import myrmod.jobapp.Service.JobService;
 import org.junit.jupiter.api.Test;
@@ -155,7 +154,7 @@ class JobControllerTest {
 
 	@Test
 	void testDeleteJob_NotFound() {
-		when(jobService.findById(1L)).thenThrow(ResourceNotFoundException.class);
+		when(jobService.findById(1L)).thenReturn(Mono.empty());
 
 		webTestClient.delete().uri("/jobs/1")
 			.exchange()

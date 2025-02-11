@@ -22,25 +22,25 @@ public class JobController {
 
 	@GetMapping
 	public Mono<ResponseEntity<Flux<Job>>> findAll() {
-		return Mono.just(ResponseEntity.ok(this.jobService.findAll()));
+		return Mono.just(ResponseEntity.ok(jobService.findAll()));
 	}
 
 	@GetMapping("/{id}")
 	public Mono<ResponseEntity<Job>> findById(@PathVariable Long id) {
-		return this.jobService.findById(id)
+		return jobService.findById(id)
 			.map(ResponseEntity::ok)
 			.defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 
 	@PostMapping
 	public Mono<ResponseEntity<Job>> create(@RequestBody Job job) {
-		return this.jobService.save(job)
+		return jobService.save(job)
 			.map(savedJob -> ResponseEntity.status(HttpStatus.CREATED).body(savedJob));
 	}
 
 	@PutMapping("/{id}")
 	public Mono<ResponseEntity<Job>> update(@PathVariable Long id, @RequestBody Job job) {
-		return this.jobService.findById(id)
+		return jobService.findById(id)
 			.flatMap(existingJob -> {
 				if (job.getTitle() != null) existingJob.setTitle(job.getTitle());
 				if (job.getDescription() != null) existingJob.setDescription(job.getDescription());
@@ -48,7 +48,7 @@ public class JobController {
 				if (job.getMaxSalary() != null) existingJob.setMaxSalary(job.getMaxSalary());
 				if (job.getLocation() != null) existingJob.setLocation(job.getLocation());
 
-				return this.jobService.save(existingJob);
+				return jobService.save(existingJob);
 			})
 			.map(ResponseEntity::ok)
 			.defaultIfEmpty(ResponseEntity.notFound().build());
@@ -56,8 +56,9 @@ public class JobController {
 
 	@DeleteMapping("/{id}")
 	public Mono<ResponseEntity<Object>> delete(@PathVariable Long id) {
-		return this.jobService.findById(id)
+		return jobService.findById(id)
 			.flatMap(existingJob -> jobService.delete(existingJob.getId())
-				.then(Mono.just(ResponseEntity.noContent().build())));
+				.then(Mono.just(ResponseEntity.noContent().build())))
+				.switchIfEmpty(Mono.error(new ResourceNotFoundException("Job with ID " + id + " not found")));
 	}
 }
