@@ -1,5 +1,6 @@
 package myrmod.jobapp.Controller;
 
+import myrmod.jobapp.Exception.ResourceNotFoundException;
 import myrmod.jobapp.Model.Job;
 import myrmod.jobapp.Service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class JobController {
 				if (job.getMaxSalary() != null) existingJob.setMaxSalary(job.getMaxSalary());
 				if (job.getLocation() != null) existingJob.setLocation(job.getLocation());
 
-				return jobService.save(existingJob);
+				return this.jobService.save(existingJob);
 			})
 			.map(ResponseEntity::ok)
 			.defaultIfEmpty(ResponseEntity.notFound().build());
@@ -57,7 +58,6 @@ public class JobController {
 	public Mono<ResponseEntity<Object>> delete(@PathVariable Long id) {
 		return this.jobService.findById(id)
 			.flatMap(existingJob -> jobService.delete(existingJob.getId())
-				.then(Mono.just(ResponseEntity.noContent().build())))
-			.defaultIfEmpty(ResponseEntity.notFound().build());
+				.then(Mono.just(ResponseEntity.noContent().build())));
 	}
 }

@@ -1,5 +1,6 @@
 package myrmod.jobapp.Service;
 
+import myrmod.jobapp.Exception.ResourceNotFoundException;
 import myrmod.jobapp.Model.Job;
 import myrmod.jobapp.Repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,8 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public Mono<Job> findById(Long id) {
-		return Mono.just(jobRepository.findById(id));
+		return Mono.justOrEmpty(jobRepository.findById(id))
+			.switchIfEmpty(Mono.error(new ResourceNotFoundException("Job with ID " + id + " not found")));
 	}
 
 	@Override

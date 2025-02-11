@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: "jobapp"
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
