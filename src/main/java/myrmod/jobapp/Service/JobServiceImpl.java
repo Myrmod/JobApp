@@ -1,6 +1,5 @@
 package myrmod.jobapp.Service;
 
-import myrmod.jobapp.Exception.ResourceNotFoundException;
 import myrmod.jobapp.Model.Job;
 import myrmod.jobapp.Repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,8 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public Mono<Void> delete(Long id) {
-		return Mono.justOrEmpty(jobRepository.delete(id))
+		return Mono.justOrEmpty(jobRepository.findById(id))
+			.flatMap(existingJob -> Mono.fromRunnable(() -> jobRepository.delete(existingJob)))
 			.then();
 	}
 }

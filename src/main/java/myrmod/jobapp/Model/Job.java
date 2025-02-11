@@ -1,11 +1,29 @@
 package myrmod.jobapp.Model;
 
+import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
+
+@Entity
+@Table(name = "jobs")
 public class Job {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
+
+	@Column(name = "title")
 	private String title;
+
+	@Column(name = "description")
 	private String description;
+
+	@Column(name = "min_salary")
 	private String minSalary;
-	private String maxSalary;;
+
+	@Column(name = "max_salary")
+	private String maxSalary;
+
+	@Column(name = "location")
 	private String location;
 
 	public Job(Long id, String title, String description, String minSalary, String maxSalary, String location) {
@@ -16,6 +34,8 @@ public class Job {
 		this.maxSalary = maxSalary;
 		this.location = location;
 	}
+
+	public Job() {}
 
 	public Long getId() {
 		return id;
