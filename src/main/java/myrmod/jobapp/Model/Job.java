@@ -1,7 +1,7 @@
 package myrmod.jobapp.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "jobs")
@@ -25,6 +25,10 @@ public class Job {
 
 	@Column(name = "location")
 	private String location;
+
+	@ManyToOne
+	@JsonBackReference
+	private Company company;
 
 	public Job(Long id, String title, String description, String minSalary, String maxSalary, String location) {
 		this.id = id;
@@ -83,5 +87,13 @@ public class Job {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 }

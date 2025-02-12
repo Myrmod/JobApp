@@ -16,6 +16,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        ddl-auto: create-drop
 
   datasource:
     url: jdbc:h2:mem:test

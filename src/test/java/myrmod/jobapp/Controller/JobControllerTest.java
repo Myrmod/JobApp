@@ -78,31 +78,6 @@ class JobControllerTest {
 	}
 
 	@Test
-	void testCreateJob() {
-		Job jobRequest = new Job(null, "Job 11", "Description 11", "50000€", "60000€", "France"); // No ID
-		Job savedJob = new Job(11L, "Job 11", "Description 11", "50000€", "60000€", "France"); // With ID
-
-		when(jobService.save(any(Job.class))).thenReturn(Mono.just(savedJob));
-
-		Job responseBody = webTestClient.post().uri("/jobs")
-			.contentType(MediaType.APPLICATION_JSON)
-			.bodyValue(jobRequest)
-			.exchange()
-			.expectStatus().isCreated()
-			.returnResult(Job.class)
-			.getResponseBody()
-			.blockFirst();
-
-		assertNotNull(responseBody);
-		assertEquals(savedJob.getId(), responseBody.getId());
-		assertEquals(savedJob.getTitle(), responseBody.getTitle());
-		assertEquals(savedJob.getDescription(), responseBody.getDescription());
-		assertEquals(savedJob.getMinSalary(), responseBody.getMinSalary());
-		assertEquals(savedJob.getMaxSalary(), responseBody.getMaxSalary());
-		assertEquals(savedJob.getLocation(), responseBody.getLocation());
-	}
-
-	@Test
 	void testUpdateJob_Found() {
 		Job existingJob = new Job(1L, "Old Job", "Old Description", "40000€", "50000€", "Germany");
 		Job updatedJob = new Job(1L, "Updated Job", "Updated Description", "50000€", "60000€", "Germany");

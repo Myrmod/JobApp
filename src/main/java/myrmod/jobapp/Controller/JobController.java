@@ -32,12 +32,6 @@ public class JobController {
 			.defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 
-	@PostMapping
-	public Mono<ResponseEntity<Job>> create(@RequestBody Job job) {
-		return jobService.save(job)
-			.map(savedJob -> ResponseEntity.status(HttpStatus.CREATED).body(savedJob));
-	}
-
 	@PutMapping("/{id}")
 	public Mono<ResponseEntity<Job>> update(@PathVariable Long id, @RequestBody Job job) {
 		return jobService.findById(id)
