@@ -21,6 +21,21 @@ spring:
   datasource:
     url: jdbc:h2:mem:test
 
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true
+
+server:
+  shutdown: graceful
+
 logging:
   level:
     org:
