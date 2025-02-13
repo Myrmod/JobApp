@@ -31,8 +31,8 @@ class CompanyControllerTest {
 
 	@Test
 	void testFindAll() {
-		Company company1 = new Company(1L, "Company 1", "Description 1", null);
-		Company company2 = new Company(2L, "Company 2", "Description 2", null);
+		Company company1 = new Company(1L, "Company 1", "Description 1");
+		Company company2 = new Company(2L, "Company 2", "Description 2");
 
 		when(companyService.findAll()).thenReturn(Flux.just(company1, company2));
 
@@ -53,7 +53,7 @@ class CompanyControllerTest {
 
 	@Test
 	void testFindById_Found() {
-		Company company = new Company(1L, "Company 1", "Description 1", null);
+		Company company = new Company(1L, "Company 1", "Description 1");
 
 		when(companyService.findById(1L)).thenReturn(Mono.just(company));
 
@@ -81,8 +81,8 @@ class CompanyControllerTest {
 
 	@Test
 	void testCreateCompany() {
-		Company companyRequest = new Company(null, "Company 11", "Description 11", null); // No ID
-		Company savedCompany = new Company(11L, "Company 11", "Description 11", null); // With ID
+		Company companyRequest = new Company(null, "Company 11", "Description 11"); // No ID
+		Company savedCompany = new Company(11L, "Company 11", "Description 11"); // With ID
 
 		when(companyService.save(any(Company.class))).thenReturn(Mono.just(savedCompany));
 
@@ -104,13 +104,13 @@ class CompanyControllerTest {
 
 	@Test
 	void testUpdateCompany_Found() {
-		Company existingCompany = new Company(1L, "Old Company", "Old Description", null);
-		Company updatedCompany = new Company(1L, "Updated Company", "Updated Description", null);
+		Company existingCompany = new Company(1L, "Old Company", "Old Description");
+		Company updatedCompany = new Company(1L, "Updated Company", "Updated Description");
 
 		when(companyService.findById(1L)).thenReturn(Mono.just(existingCompany));
 		when(companyService.save(any(Company.class))).thenReturn(Mono.just(updatedCompany));
 
-		Company responseBody = webTestClient.put().uri("/companies/1")
+		Company responseBody = webTestClient.patch().uri("/companies/1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(updatedCompany)
 			.exchange()
@@ -128,11 +128,11 @@ class CompanyControllerTest {
 
 	@Test
 	void testUpdateCompany_NotFound() {
-		Company updatedCompany = new Company(1L, "Updated Company", "Updated Description", null);
+		Company updatedCompany = new Company(1L, "Updated Company", "Updated Description");
 
 		when(companyService.findById(1L)).thenReturn(Mono.empty());
 
-		webTestClient.put().uri("/companies/1")
+		webTestClient.patch().uri("/companies/1")
 			.bodyValue(updatedCompany)
 			.exchange()
 			.expectStatus().isNotFound();
@@ -140,7 +140,7 @@ class CompanyControllerTest {
 
 	@Test
 	void testDeleteCompany_Found() {
-		Company existingCompany = new Company(1L, "Company to Delete", "Description", null);
+		Company existingCompany = new Company(1L, "Company to Delete", "Description");
 
 		when(companyService.findById(1L)).thenReturn(Mono.just(existingCompany));
 		when(companyService.delete(1L)).thenReturn(Mono.empty());

@@ -2,6 +2,7 @@ package myrmod.jobapp.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "jobs")
@@ -12,9 +13,11 @@ public class Job {
 	private Long id;
 
 	@Column(name = "title")
+	@NotBlank(message = "Title is required")
 	private String title;
 
 	@Column(name = "description")
+	@NotBlank(message = "Description is required")
 	private String description;
 
 	@Column(name = "min_salary")
@@ -24,6 +27,7 @@ public class Job {
 	private String maxSalary;
 
 	@Column(name = "location")
+	@NotBlank(message = "Location is required")
 	private String location;
 
 	@ManyToOne

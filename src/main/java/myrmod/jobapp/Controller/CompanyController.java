@@ -3,6 +3,7 @@ package myrmod.jobapp.Controller;
 import myrmod.jobapp.Exception.ResourceNotFoundException;
 import myrmod.jobapp.Model.Company;
 import myrmod.jobapp.Model.Job;
+import myrmod.jobapp.Model.Review;
 import myrmod.jobapp.Service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/companies")
@@ -39,13 +43,37 @@ public class CompanyController {
 			.map(savedCompany -> ResponseEntity.status(HttpStatus.CREATED).body(savedCompany));
 	}
 
-	@PutMapping("/{id}")
-	public Mono<ResponseEntity<Company>> update(@PathVariable Long id, @RequestBody Company company) {
+	@PatchMapping("/{id}")
+	public Mono<ResponseEntity<Company>> update(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
 		return companyService.findById(id)
 			.flatMap(existingCompany -> {
-				if (company.getName() != null) existingCompany.setName(company.getName());
-				if (company.getDescription() != null) existingCompany.setDescription(company.getDescription());
-				if (company.getJobs() != null) existingCompany.setJobs(company.getJobs());
+				updates.forEach((key, value) -> {
+					switch (key) {
+						case "title":
+							existingCompany.setName((String) value);
+							break;
+						case "description":
+							existingCompany.setDescription((String) value);
+							break;
+						case "jobs":
+							if (value instanceof List<?>) {
+								List<Job> jobList = ((List<?>) value).stream()
+									.filter(Job.class::isInstance) // Ensure each item is a Job
+									.map(Job.class::cast)         // Cast safely
+									.toList();
+								existingCompany.setJobs(jobList);
+							}
+							break;
+						case "reviews":
+							if (value instanceof List<?>) {
+								List<Review> reviewList = ((List<?>) value).stream()
+									.filter(Review.class::isInstance)
+									.map(Review.class::cast)
+									.toList();
+								existingCompany.setReviews(reviewList);
+							}
+							break;
+					}});
 
 				return companyService.save(existingCompany);
 			})

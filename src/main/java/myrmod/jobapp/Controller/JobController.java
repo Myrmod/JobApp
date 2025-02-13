@@ -4,11 +4,12 @@ import myrmod.jobapp.Exception.ResourceNotFoundException;
 import myrmod.jobapp.Model.Job;
 import myrmod.jobapp.Service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/jobs")
@@ -32,15 +33,26 @@ public class JobController {
 			.defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 
-	@PutMapping("/{id}")
-	public Mono<ResponseEntity<Job>> update(@PathVariable Long id, @RequestBody Job job) {
+	@PatchMapping("/{id}")
+	public Mono<ResponseEntity<Job>> update(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
 		return jobService.findById(id)
 			.flatMap(existingJob -> {
-				if (job.getTitle() != null) existingJob.setTitle(job.getTitle());
-				if (job.getDescription() != null) existingJob.setDescription(job.getDescription());
-				if (job.getMinSalary() != null) existingJob.setMinSalary(job.getMinSalary());
-				if (job.getMaxSalary() != null) existingJob.setMaxSalary(job.getMaxSalary());
-				if (job.getLocation() != null) existingJob.setLocation(job.getLocation());
+				updates.forEach((key, value) -> {
+					switch (key) {
+						case "title":
+							existingJob.setTitle((String) value);
+							break;
+						case "description":
+							existingJob.setDescription((String) value);
+							break;
+						case "minSalary":
+							existingJob.setMinSalary((String) value);
+						case "maxSalary":
+							existingJob.setMaxSalary((String) value);
+						case "location":
+							existingJob.setLocation((String) value);
+							break;
+					}});
 
 				return jobService.save(existingJob);
 			})

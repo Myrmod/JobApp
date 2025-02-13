@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 @Service
 public class CompanyServiceImpl implements CompanyService {
 	private final CompanyRepository companyRepository;
@@ -38,13 +36,11 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	public Mono<Job> addJob(Long id, Job job) {
-		Optional<Company> company = companyRepository.findById(id);
-
 		return Mono.justOrEmpty(companyRepository.findById(id))
-				.flatMap(existingCompany -> {
-					job.setCompany(existingCompany);
-					return jobService.save(job);
-				});
+			.flatMap(existingCompany -> {
+				job.setCompany(existingCompany);
+				return jobService.save(job);
+			});
 	}
 
 	@Override

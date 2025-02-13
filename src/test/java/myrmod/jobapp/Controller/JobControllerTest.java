@@ -85,7 +85,7 @@ class JobControllerTest {
 		when(jobService.findById(1L)).thenReturn(Mono.just(existingJob));
 		when(jobService.save(any(Job.class))).thenReturn(Mono.just(updatedJob));
 
-		Job responseBody = webTestClient.put().uri("/jobs/1")
+		Job responseBody = webTestClient.patch().uri("/jobs/1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(updatedJob)
 			.exchange()
@@ -109,7 +109,7 @@ class JobControllerTest {
 
 		when(jobService.findById(1L)).thenReturn(Mono.empty());
 
-		webTestClient.put().uri("/jobs/1")
+		webTestClient.patch().uri("/jobs/1")
 			.bodyValue(updatedJob)
 			.exchange()
 			.expectStatus().isNotFound();
