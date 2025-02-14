@@ -6,22 +6,57 @@ spring:
     init:
       mode: "always"
 
-  h2:
-    console:
-      enabled: true
+  profiles:
+    active: "default" # Set default profile
+
+# Default Profile
+---
+spring:
+  config:
+    activate:
+      on-profile: "default"
 
   jpa:
     defer-datasource-initialization: true
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        ddl-auto: create-drop
+    hibernate:
+      format_sql: true
+      ddl-auto: create-drop
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db
+    username: db
+    password: db
+
+# Test Profile
+---
+spring:
+  config:
+    activate:
+      on-profile: "test"
+
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      format_sql: true
+      ddl-auto: create-drop
+    database: H2
+    database-platform: org.hibernate.dialect.H2Dialect
 
   datasource:
     url: jdbc:h2:mem:test
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
 
-# Actuator
+  h2:
+    console:
+      enabled: true
+
+# Actuator Settings (Common for all profiles)
 management:
   endpoints:
     web:
