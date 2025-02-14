@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: "jobapp.jobms"
+
+  sql:
+    init:
+      mode: "always"
+
+  profiles:
+    active: "default" # Set default profile
+
+# Default Profile
+---
+spring:
+  config:
+    activate:
+      on-profile: "default"
+
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      format_sql: true
+      ddl-auto: create-drop
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jobdb
+    username: db
+    password: db
+
+server:
+  port: 8082
+
+
+# Test Profile
+---
+spring:
+  config:
+    activate:
+      on-profile: "test"
+
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      format_sql: true
+      ddl-auto: create-drop
+    database: H2
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+
+# Actuator Settings (Common for all profiles)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true
+
+server:
+  shutdown: graceful
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
