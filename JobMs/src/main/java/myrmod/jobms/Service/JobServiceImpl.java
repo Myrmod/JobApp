@@ -22,6 +22,11 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
+	public Flux<Job> findByCompanyId(Long companyId) {
+		return Flux.fromIterable(jobRepository.findByCompanyId(companyId));
+	}
+
+	@Override
 	public Flux<Job> findAll() {
 		return Flux.fromIterable(jobRepository.findAll());
 	}

@@ -50,6 +50,29 @@ class JobControllerTest {
 	}
 
 	@Test
+	void testFindByCompanyId() {
+		Job job1 = new Job(1L, "Job 1", "Description 1", "40000€", "50000€", "Germany", 1L);
+		Job job2 = new Job(2L, "Job 2", "Description 2", "40000€", "50000€", "Germany", 1L);
+		Job job3 = new Job(3L, "Job 3", "Description 3", "40000€", "50000€", "Germany", 2L);
+
+		when(jobService.findAll()).thenReturn(Flux.just(job1, job2));
+
+		List<Job> responseBody = webTestClient.get().uri("/jobs")
+			.exchange()
+			.expectStatus().isOk()
+			.returnResult(Job.class)
+			.getResponseBody()
+			.collectList()
+			.block();
+
+		assertNotNull(responseBody);
+		assertEquals(2, responseBody.size());
+		assertEquals(job1.getId(), responseBody.get(0).getId());
+		assertEquals(job1.getTitle(), responseBody.get(0).getTitle());
+		assertEquals(job2.getId(), responseBody.get(1).getId());
+	}
+
+	@Test
 	void testFindById_Found() {
 		Job job = new Job(1L, "Job 1", "Description 1", "40000€", "50000€", "Germany", 1L);
 

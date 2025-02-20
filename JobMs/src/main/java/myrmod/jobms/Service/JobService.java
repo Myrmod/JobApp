@@ -9,6 +9,8 @@ import reactor.core.publisher.Mono;
 public interface JobService {
 	Mono<Job> findById(Long id);
 
+	Flux<Job> findByCompanyId(Long companyId);
+
 	Flux<Job> findAll();
 
 	Mono<Job> save(Job job);

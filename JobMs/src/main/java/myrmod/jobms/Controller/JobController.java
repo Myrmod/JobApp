@@ -23,8 +23,12 @@ public class JobController {
 	}
 
 	@GetMapping
-	public Mono<ResponseEntity<Flux<Job>>> findAll() {
-		return Mono.just(ResponseEntity.ok(jobService.findAll()));
+	public Mono<ResponseEntity<Flux<Job>>> findAll(@RequestParam(required = false) Long companyId) {
+		Flux<Job> jobs = (companyId != null)
+			? jobService.findByCompanyId(companyId)
+			: jobService.findAll();
+
+		return Mono.just(ResponseEntity.ok(jobs));
 	}
 
 	@GetMapping("/{id}")

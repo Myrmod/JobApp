@@ -25,6 +25,7 @@ class ReviewServiceImplTest {
 	private ReviewServiceImpl reviewService;
 
 	private Review review;
+	private Review review2;
 
 	@BeforeEach
 	void setUp() {
@@ -32,6 +33,12 @@ class ReviewServiceImplTest {
 		review.setId(1L);
 		review.setTitle("Great Company");
 		review.setRating(5);
+		review.setCompanyId(1L);
+		review2 = new Review();
+		review2.setId(2L);
+		review2.setTitle("Great Company");
+		review2.setRating(5);
+		review2.setCompanyId(2L);
 	}
 
 	@Test
@@ -64,6 +71,17 @@ class ReviewServiceImplTest {
 			.verifyComplete();
 
 		verify(reviewRepository, times(1)).findAll();
+	}
+
+	@Test
+	void findByCompanyId_ShouldReturnReviews() {
+		when(reviewRepository.findByCompanyId(1L)).thenReturn(List.of(review));
+
+		StepVerifier.create(reviewService.findByCompanyId(1L))
+			.expectNext(review)
+			.verifyComplete();
+
+		verify(reviewRepository, times(1)).findByCompanyId(1L);
 	}
 
 	@Test

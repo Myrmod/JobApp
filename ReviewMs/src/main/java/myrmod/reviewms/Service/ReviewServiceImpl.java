@@ -22,6 +22,11 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
+	public Flux<Review> findByCompanyId(Long companyId) {
+		return Flux.fromIterable(reviewRepository.findByCompanyId(companyId));
+	}
+
+	@Override
 	public Flux<Review> findAll() {
 		return Flux.fromIterable(reviewRepository.findAll());
 	}

@@ -23,8 +23,12 @@ public class ReviewController {
 	}
 
 	@GetMapping
-	public Mono<ResponseEntity<Flux<Review>>> findAll() {
-		return Mono.just(ResponseEntity.ok(reviewService.findAll()));
+	public Mono<ResponseEntity<Flux<Review>>> findAll(@RequestParam(required = false) Long companyId) {
+		Flux<Review> reviews = (companyId != null)
+			? reviewService.findByCompanyId(companyId)
+			: reviewService.findAll();
+
+		return Mono.just(ResponseEntity.ok(reviews));
 	}
 
 	@GetMapping("/{id}")

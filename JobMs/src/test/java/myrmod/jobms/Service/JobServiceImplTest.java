@@ -25,12 +25,18 @@ class JobServiceImplTest {
 	private JobServiceImpl jobService;
 
 	private Job job;
+	private Job job2;
 
 	@BeforeEach
 	void setUp() {
 		job = new Job();
 		job.setId(1L);
 		job.setTitle("Software Engineer");
+		job.setCompanyId(1L);
+		job2 = new Job();
+		job2.setId(1L);
+		job2.setTitle("Software Engineer");
+		job2.setCompanyId(2L);
 	}
 
 	@Test
@@ -63,6 +69,17 @@ class JobServiceImplTest {
 			.verifyComplete();
 
 		verify(jobRepository, times(1)).findAll();
+	}
+
+	@Test
+	void findByCompanyId_ShouldReturnReviews() {
+		when(jobRepository.findByCompanyId(1L)).thenReturn(List.of(job));
+
+		StepVerifier.create(jobService.findByCompanyId(1L))
+			.expectNext(job)
+			.verifyComplete();
+
+		verify(jobRepository, times(1)).findByCompanyId(1L);
 	}
 
 	@Test

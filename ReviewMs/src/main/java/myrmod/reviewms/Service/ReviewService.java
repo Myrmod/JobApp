@@ -9,6 +9,8 @@ import reactor.core.publisher.Mono;
 public interface ReviewService {
 	Mono<Review> findById(Long id);
 
+	Flux<Review> findByCompanyId(Long companyId);
+
 	Flux<Review> findAll();
 
 	Mono<Review> save(Review review);

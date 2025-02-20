@@ -50,6 +50,29 @@ class ReviewControllerTest {
 	}
 
 	@Test
+	void testFindByCompanyId() {
+		Review review1 = new Review(1L, "Review 1", "Description 1", 3, 1L);
+		Review review2 = new Review(2L, "Review 2", "Description 2", 2, 1L);
+		Review review3 = new Review(3L, "Review 3", "Description 3", 2, 2L);
+
+		when(reviewService.findByCompanyId(1L)).thenReturn(Flux.just(review1, review2));
+
+		List<Review> responseBody = webTestClient.get().uri("/reviews?companyId=1")
+			.exchange()
+			.expectStatus().isOk()
+			.returnResult(Review.class)
+			.getResponseBody()
+			.collectList()
+			.block();
+
+		assertNotNull(responseBody);
+		assertEquals(2, responseBody.size());
+		assertEquals(review1.getId(), responseBody.get(0).getId());
+		assertEquals(review1.getTitle(), responseBody.get(0).getTitle());
+		assertEquals(review2.getId(), responseBody.get(1).getId());
+	}
+
+	@Test
 	void testFindById_Found() {
 		Review review = new Review(1L, "Review 1", "Description 1", 5, 1L);
 
